@@ -12,6 +12,7 @@
         <list>
           <option value="build" />
           <option value="jar" />
+          <option value="shadowJar" />
         </list>
       </option>
       <option name="vmOptions" />

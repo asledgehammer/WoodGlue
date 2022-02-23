@@ -217,7 +217,7 @@ object Settings {
     var valid = false
     while (!valid) {
       WoodGlue.log("Copy media directory? (y)")
-      i = scanner.nextLine().toLowerCase()
+      i = scanner.nextLine().lowercase(Locale.getDefault())
       if (i.isEmpty()) i = "y"
       if (i == "y" || i == "n" || i == "yes" || i == "no") {
         copyMediaDir = i == "y" || i == "yes"

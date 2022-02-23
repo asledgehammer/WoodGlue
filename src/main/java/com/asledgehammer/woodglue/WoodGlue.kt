@@ -5,7 +5,9 @@ import java.io.*
 import java.lang.instrument.Instrumentation
 import java.nio.file.FileAlreadyExistsException
 import java.nio.file.Files
+import java.util.*
 import java.util.jar.JarFile
+import kotlin.collections.ArrayList
 
 class WoodGlue(inst: Instrumentation) {
 
@@ -56,19 +58,19 @@ class WoodGlue(inst: Instrumentation) {
 
   private fun copyMiscFiles() {
     var from: File
-    var dest: File
+    var dst: File
     val filesToCopy = arrayOf("${this.pzPath}/steam_appid.txt", "${this.pzPath}/serialize.lua")
     try {
       for (file in filesToCopy) {
         from = File(file)
-        dest = File(from.name)
+        dst = File(from.name)
         if (from.isFile) {
           try {
-            Files.copy(from.toPath(), dest.toPath())
+            Files.copy(from.toPath(), dst.toPath())
             log("Copied $file.")
           } catch (ignored: FileAlreadyExistsException) {
           }
-        } else copyFolder(from, dest)
+        } else copyFolder(from, dst)
       }
     } catch (e: IOException) {
       e.printStackTrace()
@@ -115,7 +117,7 @@ class WoodGlue(inst: Instrumentation) {
     }
   }
 
-  fun injectJars(inst: Instrumentation, dir: File, excludes: Array<String> = arrayOf()) {
+  private fun injectJars(inst: Instrumentation, dir: File, excludes: Array<String> = arrayOf()) {
     val files = dir.listFiles()
     if (files != null) {
       for (file in files) {
@@ -144,6 +146,10 @@ class WoodGlue(inst: Instrumentation) {
   private fun injectPatches(inst: Instrumentation, dir: File, jars: ArrayList<String>) {
     for (jarName in jars) {
       val jarFile = File(dir, "$jarName.jar")
+      if(!jarFile.exists()) {
+        log("Cannot find patch: ${jarFile.path} (IGNORING)")
+        continue
+      }
       try {
         log("Injecting patch: ${jarFile.name}..")
         inst.appendToSystemClassLoaderSearch(JarFile(jarFile))
@@ -155,7 +161,7 @@ class WoodGlue(inst: Instrumentation) {
 
   companion object {
 
-    const val HEADER = "[WoodGlue] :: "
+    private const val HEADER = "[WoodGlue] :: "
     val npzJar = File("lib/built/PZ_41.65.jar")
 
     /**
@@ -201,12 +207,12 @@ class WoodGlue(inst: Instrumentation) {
 
       require(src.isDirectory && dst.isDirectory)
 
-      val typeLower = type.toLowerCase()
+      val typeLower = type.lowercase(Locale.getDefault())
 
       val files = src.listFiles()
       if (files != null && files.isNotEmpty()) {
         for (file in files) {
-          if (file.extension.toLowerCase() == typeLower) {
+          if (file.extension.lowercase(Locale.getDefault()) == typeLower) {
 
             val fileDst = File(dst, file.name)
 
