@@ -1,4 +1,3 @@
-
 # Directory for the "ProjectZomboid Dedicated Server" installation.
 pz_server_dir: null
 
@@ -10,6 +9,5 @@ copy_media_dir: false
 #  Note: The first patch to load is the one overwriting anything loaded after. 
 #        (PZ is loaded last)
 patches:
-- Sledgehammer_PZ-41.65_1.0.0
-- CraftHammer_PZ-41.65_1.0.5_BETA_2
-
+- SledgeHammer-1.0.0
+- CraftHammer-1.0.5_BETA_2

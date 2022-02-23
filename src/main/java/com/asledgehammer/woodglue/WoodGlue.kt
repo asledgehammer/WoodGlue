@@ -6,7 +6,6 @@ import java.lang.instrument.Instrumentation
 import java.nio.file.FileAlreadyExistsException
 import java.nio.file.Files
 import java.util.jar.JarFile
-import kotlin.collections.ArrayList
 
 class WoodGlue(inst: Instrumentation) {
 
@@ -56,24 +55,20 @@ class WoodGlue(inst: Instrumentation) {
   }
 
   private fun copyMiscFiles() {
-    var src: File
-    var dst: File
+    var from: File
+    var dest: File
     val filesToCopy = arrayOf("${this.pzPath}/steam_appid.txt", "${this.pzPath}/serialize.lua")
     try {
       for (file in filesToCopy) {
-        src = File(file)
-        dst = File(src.name)
-        if (src.isFile) {
+        from = File(file)
+        dest = File(from.name)
+        if (from.isFile) {
           try {
-            val bFrom = src.readBytes()
-            val bDst = dst.readBytes()
-            if(!bFrom.contentEquals(bDst)) {
-              Files.copy(src.toPath(), dst.toPath())
-              log("Copied $file.")
-            }
+            Files.copy(from.toPath(), dest.toPath())
+            log("Copied $file.")
           } catch (ignored: FileAlreadyExistsException) {
           }
-        } else copyFolder(src, dst)
+        } else copyFolder(from, dest)
       }
     } catch (e: IOException) {
       e.printStackTrace()
