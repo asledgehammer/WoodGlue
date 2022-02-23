@@ -7,7 +7,7 @@ public class Main {
     try {
       Class.forName("zombie.network.GameServer")
           .getDeclaredMethod("main", String[].class)
-          .invoke(null, (Object[]) args);
+          .invoke(null, new Object[] {args});
     } catch (IllegalAccessException
         | InvocationTargetException
         | NoSuchMethodException

@@ -6,6 +6,7 @@ import java.lang.instrument.Instrumentation
 import java.nio.file.FileAlreadyExistsException
 import java.nio.file.Files
 import java.util.jar.JarFile
+import kotlin.collections.ArrayList
 
 class WoodGlue(inst: Instrumentation) {
 
@@ -23,7 +24,7 @@ class WoodGlue(inst: Instrumentation) {
     copyPZFiles()
     injectJars(inst, dirLib, arrayOf("woodglue"))
     injectPatches(inst, dirPatches, Settings.patches)
-    // Do this last so Craftboid classes takes priority.
+    // Do this last so patches take priority.
     injectJars(inst, dirLibBuilt)
   }
 
@@ -38,6 +39,7 @@ class WoodGlue(inst: Instrumentation) {
 
   private fun handleMediaFolder() {
     if (!Settings.copyMediaDir) return
+    log("Checking media folder..")
     try {
       val from = File(pzDir, "media")
       val dst = File(from.name)
@@ -54,20 +56,24 @@ class WoodGlue(inst: Instrumentation) {
   }
 
   private fun copyMiscFiles() {
-    var from: File
-    var dest: File
+    var src: File
+    var dst: File
     val filesToCopy = arrayOf("${this.pzPath}/steam_appid.txt", "${this.pzPath}/serialize.lua")
     try {
       for (file in filesToCopy) {
-        from = File(file)
-        dest = File(from.name)
-        if (from.isFile) {
+        src = File(file)
+        dst = File(src.name)
+        if (src.isFile) {
           try {
-            Files.copy(from.toPath(), dest.toPath())
-            log("Copied $file.")
+            val bFrom = src.readBytes()
+            val bDst = dst.readBytes()
+            if(!bFrom.contentEquals(bDst)) {
+              Files.copy(src.toPath(), dst.toPath())
+              log("Copied $file.")
+            }
           } catch (ignored: FileAlreadyExistsException) {
           }
-        } else copyFolder(from, dest)
+        } else copyFolder(src, dst)
       }
     } catch (e: IOException) {
       e.printStackTrace()
