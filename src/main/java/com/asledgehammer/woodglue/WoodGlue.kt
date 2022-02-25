@@ -100,20 +100,9 @@ class WoodGlue(inst: Instrumentation) {
 
     if (!npzJar.exists()) {
       val classDir = "$pzPath/java"
-      val classDirectories = arrayOf(
-        File("$classDir/astar"),
-        File("$classDir/com"),
-        File("$classDir/de"),
-        File("$classDir/fmod"),
-        File("$classDir/javax"),
-        File("$classDir/N3D"),
-        File("$classDir/org"),
-        File("$classDir/se"),
-        File("$classDir/zombie")
-      )
-
+      val dirs = File(classDir).listFiles(FileFilter { it.isDirectory } )!!
       log("Packing PZ Code: ${npzJar.name}..")
-      createJarArchive(npzJar, classDirectories, "zombie.network.GameServer")
+      createJarArchive(npzJar, dirs, "zombie.network.GameServer")
     }
   }
 
@@ -161,8 +150,9 @@ class WoodGlue(inst: Instrumentation) {
 
   companion object {
 
+    private const val PZ_VERSION = "41.66"
     private const val HEADER = "[WoodGlue] :: "
-    val npzJar = File("lib/built/PZ_41.65.jar")
+    val npzJar = File("lib/built/ProjectZomboid_${PZ_VERSION}.jar")
 
     /**
      * Copies a File source directory to a File destination directory.
