@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.asledgehammer"
-version = "1.0_0"
+version = "41.68__1.1_0"
 
 apply(plugin = "java")
 apply(plugin = "kotlin")
