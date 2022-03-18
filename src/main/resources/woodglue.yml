@@ -9,5 +9,5 @@ copy_media_dir: false
 #  Note: The first patch to load is the one overwriting anything loaded after. 
 #        (PZ is loaded last)
 patches:
-- SledgeHammer-41.68__1.0.0
+- SledgeHammer-41.68__1.1.0
 - CraftHammer-41.68__1.0.6_BETA_1
