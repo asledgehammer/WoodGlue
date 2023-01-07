@@ -150,7 +150,7 @@ class WoodGlue(inst: Instrumentation) {
 
   companion object {
 
-    private const val PZ_VERSION = "41.68"
+    private const val PZ_VERSION = "41.78"
     private const val HEADER = "[WoodGlue] :: "
     val npzJar = File("lib/built/ProjectZomboid_${PZ_VERSION}.jar")
 
